@@ -17,7 +17,7 @@
 *.json
 *.json.gz
 *.crdownload
-
+data/
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/

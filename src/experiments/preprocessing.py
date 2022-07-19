@@ -20,16 +20,16 @@ from transformers import XLNetTokenizer, XLNetModel
 
 
 # # In the
-# # labeled train/test sets, a negative review has a score <= 4 out of 10,
-# # and a positive review has a score >= 7 out of 10. Thus reviews with
+# # labeled train/test sets, a negative text has a score <= 4 out of 10,
+# # and a positive text has a score >= 7 out of 10. Thus text with
 # # more neutral ratings are not included in the train/test sets. In the
-# # unsupervised set, reviews of any rating are included and there are an
-# # even number of reviews > 5 and <= 5.
+# # unsupervised set, text of any rating are included and there are an
+# # even number of text > 5 and <= 5.
 
-# '/Users/talsagie-private/Desktop/NLP Proj/data/train/pos' - pos loc
-# '/Users/talsagie-private/Desktop/NLP Proj/data/train/neg' - neg loc
+# '/Users/talsagie-private/Desktop/NLP_Proj/data/train/pos' - pos loc
+# '/Users/talsagie-private/Desktop/NLP_Proj/data/train/neg' - neg loc
 def load_df(path_to_train):
-	# # Create a list object to import positive reviews from train directory
+	# # Create a list object to import positive text from train directory
 	file_names = os.listdir(path_to_train)
 	# # Create dataframe to store scores, labels, and texts
 	train_df = pd.DataFrame(columns=['text', 'score','label'])
@@ -149,8 +149,8 @@ def tokens_graph(df):
 
 def create_data_loader(df, tokenizer, max_len, batch_size):
   ds = ImdbDataset(
-    reviews=df.review.to_numpy(),
-    targets=df.sentiment.to_numpy(),
+    text=df.text.to_numpy(),
+    label=df.label.to_numpy(),
     tokenizer=tokenizer,
     max_len=max_len
   )

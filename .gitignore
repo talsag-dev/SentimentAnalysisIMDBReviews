@@ -17,13 +17,13 @@
 *.json
 *.json.gz
 *.crdownload
-data/
+data
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
+src/model/weights/
 # C extensions
 *.so
 

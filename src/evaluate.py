@@ -23,7 +23,7 @@ def hyperparameters(model,train_data_loader):
 	]
 	optimizer = AdamW(optimizer_grouped_parameters, lr=3e-5)
 
-	total_steps = len(train_data_loader) * EPOCHS
+	total_steps = len(train_data_loader)*EPOCHS
 
 	scheduler = get_linear_schedule_with_warmup(
 	optimizer,
@@ -43,16 +43,16 @@ def eval_model(model, data_loader, device):
         for d in data_loader:
             input_ids = d["input_ids"].reshape(4,512).to(device)
             attention_mask = d["attention_mask"].to(device)
-            targets = d["targets"].to(device)
+            label = d["label"].to(device)
             
-            outputs = model(input_ids=input_ids, token_type_ids=None, attention_mask=attention_mask, labels = targets)
+            outputs = model(input_ids=input_ids, token_type_ids=None, attention_mask=attention_mask, labels = label)
             loss = outputs[0]
             logits = outputs[1]
 
             _, prediction = torch.max(outputs[1], dim=1)
-            targets = targets.cpu().detach().numpy()
+            label = label.cpu().detach().numpy()
             prediction = prediction.cpu().detach().numpy()
-            accuracy = metrics.accuracy_score(targets, prediction)
+            accuracy = metrics.accuracy_score(label, prediction)
 
             acc += accuracy
             losses.append(loss.item())
@@ -100,7 +100,9 @@ def fine_tuning(model, optimizer, device, scheduler,train_data_loader,df_train,v
 		if val_acc > best_accuracy:
 			torch.save(model.state_dict(), '/content/drive/My Drive/NLP/Sentiment Analysis Series/models/xlnet_model.bin')
 			best_accuracy = val_acc
-
+			print('Saving model...')
+			print()
+			
 ##Evaluation of the fine-tuned model
 def eval(model,test_data_loader,device,df_test):
 	model.load_state_dict(torch.load('/content/drive/My Drive/NLP/Sentiment Analysis Series/models/xlnet_model.bin'))
@@ -120,7 +122,7 @@ def eval(model,test_data_loader,device,df_test):
 def get_predictions(model, data_loader,device):
     model = model.eval()
     
-    review_texts = []
+    text_texts = []
     predictions = []
     prediction_probs = []
     real_values = []
@@ -128,12 +130,12 @@ def get_predictions(model, data_loader,device):
     with torch.no_grad():
         for d in data_loader:
 
-            texts = d["review_text"]
+            texts = d["text_text"]
             input_ids = d["input_ids"].reshape(4,512).to(device)
             attention_mask = d["attention_mask"].to(device)
-            targets = d["targets"].to(device)
+            label = d["label"].to(device)
             
-            outputs = model(input_ids=input_ids, token_type_ids=None, attention_mask=attention_mask, labels = targets)
+            outputs = model(input_ids=input_ids, token_type_ids=None, attention_mask=attention_mask, labels = label)
 
             loss = outputs[0]
             logits = outputs[1]
@@ -142,12 +144,12 @@ def get_predictions(model, data_loader,device):
 
             probs = F.softmax(outputs[1], dim=1)
 
-            review_texts.extend(texts)
+            text_texts.extend(texts)
             predictions.extend(preds)
             prediction_probs.extend(probs)
-            real_values.extend(targets)
+            real_values.extend(label)
 
     predictions = torch.stack(predictions).cpu()
     prediction_probs = torch.stack(prediction_probs).cpu()
     real_values = torch.stack(real_values).cpu()
-    return review_texts, predictions, prediction_probs, real_values
+    return text_texts, predictions, prediction_probs, real_values

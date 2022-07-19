@@ -20,8 +20,8 @@ from src.evaluate import hyperparameters,fine_tuning,get_predictions
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # load train df
-train_df_pos = load_df('/Users/talsagie-private/Desktop/NLP Proj/data/train/pos')
-train_df_neg = load_df('/Users/talsagie-private/Desktop/NLP Proj/data/train/neg')
+train_df_pos = load_df('/Users/talsagie-private/Desktop/NLP_Proj/data/train/pos')
+train_df_neg = load_df('/Users/talsagie-private/Desktop/NLP_Proj/data/train/neg')
 # Concatenate pos and neg train dfs
 train_df = Concatenate(train_df_pos, train_df_neg)
 
@@ -31,8 +31,8 @@ print(train_df.head())
 
 
 #load test df
-test_df_pos = load_df('/Users/talsagie-private/Desktop/NLP Proj/data/test/pos')
-test_df_neg = load_df('/Users/talsagie-private/Desktop/NLP Proj/data/test/neg')
+test_df_pos = load_df('/Users/talsagie-private/Desktop/NLP_Proj/data/test/pos')
+test_df_neg = load_df('/Users/talsagie-private/Desktop/NLP_Proj/data/test/neg')
 # Concatenate pos and neg test dfs
 test_df = Concatenate(test_df_pos, test_df_neg)
 # load test df - Watch for the head of df
@@ -67,27 +67,27 @@ print(df_test.head()) # display the first 5 rows of Test subset
 
 # pre-process for svm and nb
 #----------------- TO BE UNCOMMENTED WHEN WE HAVE THE MODEL -------------------------------
-# df_train_baseline = pre_processing_for_svm(df_train)
-# df_test_baseline = pre_processing_for_svm(df_test)
+df_train_baseline = pre_processing_for_svm(df_train)
+df_test_baseline = pre_processing_for_svm(df_test)
 #-------------------------------------------------------------------------------------------
 
 # Shuffle rows
 #----------------- TO BE UNCOMMENTED WHEN WE HAVE THE MODEL -------------------------------
-# df_train_baseline = shuffle(df_train_baseline)
-# df_test_baseline = shuffle(df_test_baseline)
+df_train_baseline = shuffle(df_train_baseline)
+df_test_baseline = shuffle(df_test_baseline)
 
-# print('-----------Train DF------------')
-# print(df_train_baseline.head())
-# print('-----------Test DF------------')
-# print(df_test_baseline.head())
+print('-----------Train DF------------')
+print(df_train_baseline.head())
+print('-----------Test DF------------')
+print(df_test_baseline.head())
 #-------------------------------------------------------------------------------------------
 
 # Split Train and Test subsets , we didnt use split_test_train function 
 # because we want to keep the same test and train subsets as its already divided
 
 #----------------- TO BE UNCOMMENTED WHEN WE HAVE THE MODEL -------------------------------
-# X_train, y_train = test_train_split(df_train_baseline)
-# X_test, y_test = test_train_split(df_test_baseline)
+X_train, y_train = test_train_split(df_train_baseline)
+X_test, y_test = test_train_split(df_test_baseline)
 # -----------------------------------------------------------------------------------------
 
 ## Baseline -SVM and NB:
@@ -95,8 +95,8 @@ print(df_test.head()) # display the first 5 rows of Test subset
 
 ##NB
 #----------------- TO BE UNCOMMENTED WHEN WE HAVE THE MODEL -------------------------------
-# Train_X_Tfidf,Test_X_Tfidf = tfidfHandle(X_train,X_test,Concatenate(df_train_baseline,df_test_baseline))
-# naive_classifer(Train_X_Tfidf,y_train,Test_X_Tfidf,y_test)
+Train_X_Tfidf,Test_X_Tfidf = tfidfHandle(X_train,X_test,Concatenate(df_train_baseline,df_test_baseline))
+naive_classifer(Train_X_Tfidf,y_train,Test_X_Tfidf,y_test)
 # -----------------------------------------------------------------------------------------
 
 ## with navie bayse  we get acc of 83%
@@ -104,7 +104,7 @@ print(df_test.head()) # display the first 5 rows of Test subset
 
 ##SVM
 #----------------- TO BE UNCOMMENTED WHEN WE HAVE THE MODEL -------------------------------
-# svm_model(Train_X_Tfidf,y_train,Test_X_Tfidf,y_test)
+svm_model(Train_X_Tfidf,y_train,Test_X_Tfidf,y_test)
 # -----------------------------------------------------------------------------------------
 ##with svm we get acc of 87.5%
 
@@ -113,8 +113,8 @@ print(df_test.head()) # display the first 5 rows of Test subset
 # lets try and use cross-validation:
 
 #----------------- TO BE UNCOMMENTED WHEN WE HAVE THE MODEL -------------------------------
-# NB_model_with_cv(Train_X_Tfidf,y_train)
-# svm_model_with_cv(Train_X_Tfidf,y_train)
+NB_model_with_cv(Train_X_Tfidf,y_train)
+svm_model_with_cv(Train_X_Tfidf,y_train)
 # -----------------------------------------------------------------------------------------
 ##with cross validation we get acc of 87% for NB and 89%
 
@@ -162,7 +162,7 @@ model = model.to(device)
 eval(model,test_data_loader, device,  df_test)
 
 
-y_review_texts, y_pred, y_pred_probs, y_test = get_predictions(
+y_text_texts, y_pred, y_pred_probs, y_test = get_predictions(
   model,
   test_data_loader,
   device

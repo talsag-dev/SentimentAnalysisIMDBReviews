@@ -8,21 +8,21 @@ MAX_LEN = 512
 
 class ImdbDataset(Dataset):
 
-    def __init__(self, reviews, targets, tokenizer, max_len):
-        self.reviews = reviews
-        self.targets = targets
+    def __init__(self, text, label, tokenizer, max_len):
+        self.text = text
+        self.label = label
         self.tokenizer = tokenizer
         self.max_len = max_len
     
     def __len__(self):
-        return len(self.reviews)
+        return len(self.text)
     
     def __getitem__(self, item):
-        review = str(self.reviews[item])
-        target = self.targets[item]
+        text = str(self.text[item])
+        target = self.label[item]
 
         encoding = self.tokenizer.encode_plus(
-        review,
+        text,
         add_special_tokens=True,
         max_length=self.max_len,
         return_token_type_ids=False,
@@ -40,8 +40,8 @@ class ImdbDataset(Dataset):
         attention_mask = torch.tensor(attention_mask)       
 
         return {
-        'review_text': review,
+        'text_text': text,
         'input_ids': input_ids,
         'attention_mask': attention_mask.flatten(),
-        'targets': torch.tensor(target, dtype=torch.long)
+        'label': torch.tensor(target, dtype=torch.long)
         }

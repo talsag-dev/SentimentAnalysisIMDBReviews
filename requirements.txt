@@ -4,3 +4,7 @@ sklearn
 matplotlib
 seaborn
 torch
+tensorflow
+sentencepiece
+transformers
+nltk
